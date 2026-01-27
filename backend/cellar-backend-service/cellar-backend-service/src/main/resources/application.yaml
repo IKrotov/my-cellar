@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: cellar-backend-service
+
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/my_cellar
+    username: postgres
+    password: 1234
+
+  liquibase:
+    enabled: true
+    change-log: classpath:/db/changelog/changelog-master.yaml
+
+jwt:
+  secret: your-256-bit-secret-key-for-jwt-token-generation-minimum-32-characters-long
+  expiration: 86400000 # 24 часа в миллисекундах
+
+
+

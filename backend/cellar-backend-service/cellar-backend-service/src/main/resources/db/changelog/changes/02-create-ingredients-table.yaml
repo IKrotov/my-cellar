@@ -1,0 +1,64 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-ingredients-table
+      author: your_name
+      changes:
+        - createTable:
+            tableName: ingredients
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: type
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: status
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+                  defaultValue: NONE
+              - column:
+                  name: amount
+                  type: integer
+                  constraints:
+                    nullable: true
+
+        - addForeignKeyConstraint:
+            baseTableName: ingredients
+            baseColumnNames: user_id
+            constraintName: fk_ingredients_user_id
+            referencedTableName: users
+            referencedColumnNames: id
+            onDelete: CASCADE
+            onUpdate: CASCADE
+
+        - createIndex:
+            tableName: ingredients
+            indexName: idx_ingredients_user_id
+            columns:
+              - column:
+                  name: user_id
+
+        - createIndex:
+            tableName: ingredients
+            indexName: idx_ingredients_name
+            columns:
+              - column:
+                  name: name

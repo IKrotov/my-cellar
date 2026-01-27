@@ -1,0 +1,40 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-users-table
+      author: your_name
+      changes:
+        - createTable:
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: login
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: password
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+
+        - addUniqueConstraint:
+            tableName: users
+            columnNames: login
+            constraintName: uk_users_login
+            deferrable: false
+            initiallyDeferred: false
+            disabled: false
+
+        - createIndex:
+            tableName: users
+            indexName: idx_users_login
+            columns:
+              - column:
+                  name: login
