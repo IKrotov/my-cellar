@@ -12,6 +12,15 @@ spring:
     enabled: true
     change-log: classpath:/db/changelog/changelog-master.yaml
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: when-authorized  # в проде — when-authorized, для отладки — always
+
 jwt:
   secret: your-256-bit-secret-key-for-jwt-token-generation-minimum-32-characters-long
   expiration: 86400000 # 24 часа в миллисекундах
