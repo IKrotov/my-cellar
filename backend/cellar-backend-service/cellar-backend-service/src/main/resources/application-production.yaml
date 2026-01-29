@@ -1,0 +1,15 @@
+# Конфигурация для деплоя в Railway (и других PaaS)
+server:
+  port: ${PORT:8080}
+
+spring:
+  datasource:
+    url: jdbc:postgresql://${PGHOST:localhost}:${PGPORT:5432}/${PGDATABASE:my_cellar}
+    username: ${PGUSER:postgres}
+    password: ${PGPASSWORD:}
+  liquibase:
+    enabled: true
+
+jwt:
+  secret: ${JWT_SECRET:your-256-bit-secret-key-for-jwt-token-generation-minimum-32-characters-long}
+  expiration: ${JWT_EXPIRATION:86400000}
