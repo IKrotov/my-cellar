@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../core/auth/auth_service.dart';
+import '../../../../core/network/auth_api.dart';
 import 'register_page.dart';
 
 class LoginPage extends StatefulWidget {
@@ -47,7 +48,7 @@ class _LoginPageState extends State<LoginPage> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Ошибка входа: ${e.toString()}'),
+              content: Text('Ошибка входа: ${messageFromAuthError(e)}'),
               backgroundColor: Colors.red,
             ),
           );

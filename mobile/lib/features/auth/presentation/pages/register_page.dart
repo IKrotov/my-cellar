@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../core/auth/auth_service.dart';
+import '../../../../core/network/auth_api.dart';
 
 class RegisterPage extends StatefulWidget {
   final AuthService authService;
@@ -50,7 +51,7 @@ class _RegisterPageState extends State<RegisterPage> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Ошибка регистрации: ${e.toString()}'),
+              content: Text('Ошибка регистрации: ${messageFromAuthError(e)}'),
               backgroundColor: Colors.red,
             ),
           );
