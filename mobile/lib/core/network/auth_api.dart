@@ -34,9 +34,7 @@ class AuthApi {
   void _throwIfNotOk(Response<Map<String, dynamic>> response) {
     if (response.statusCode != null && response.statusCode! >= 400) {
       final data = response.data;
-      final msg = data is Map
-          ? (data['message'] ?? data['error'] ?? response.statusMessage)
-          : response.statusMessage;
+      final msg = data?['message'] ?? data?['error'] ?? response.statusMessage;
       throw DioException(
         requestOptions: response.requestOptions,
         response: response,

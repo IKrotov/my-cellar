@@ -32,7 +32,7 @@ class UserService(
 
     fun login(request: LoginRequest): LoginResponse {
         val userDetails = userDetailsService.loadUserByUsername(request.login)
-        if (userDetails.password != passwordEncoder.encode(request.password)) {
+        if (!passwordEncoder.matches(request.password, userDetails.password)) {
             throw AuthenticationException()
         }
 
