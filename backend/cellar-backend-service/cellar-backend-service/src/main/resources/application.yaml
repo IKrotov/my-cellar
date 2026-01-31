@@ -23,7 +23,8 @@ management:
 
 jwt:
   secret: your-256-bit-secret-key-for-jwt-token-generation-minimum-32-characters-long
-  expiration: 86400000 # 24 часа в миллисекундах
+  access-expiration: 900000   # 15 минут (access token)
+  refresh-expiration: 604800000 # 7 дней (refresh token, для хранения в БД)
 
 
 

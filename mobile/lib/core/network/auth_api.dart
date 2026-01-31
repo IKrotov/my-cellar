@@ -31,6 +31,16 @@ class AuthApi {
     return RegisterResponseDto.fromJson(response.data!);
   }
 
+  /// POST /auth/refresh — вызывается без Bearer (клиент без токена).
+  Future<RefreshResponseDto> refresh(RefreshRequestDto request) async {
+    final response = await _client.dio.post<Map<String, dynamic>>(
+      '/auth/refresh',
+      data: request.toJson(),
+    );
+    _throwIfNotOk(response);
+    return RefreshResponseDto.fromJson(response.data!);
+  }
+
   void _throwIfNotOk(Response<Map<String, dynamic>> response) {
     if (response.statusCode != null && response.statusCode! >= 400) {
       final data = response.data;
@@ -48,8 +58,9 @@ class AuthApi {
 String messageFromAuthError(Object e) {
   if (e is DioException) {
     final msg = e.response?.data;
-    if (msg is Map && msg['message'] != null) {
-      return msg['message'] as String;
+    if (msg is Map) {
+      if (msg['message'] != null) return msg['message'] as String;
+      if (msg['error'] != null) return msg['error'] as String;
     }
     return e.message ?? 'Ошибка сети. Проверьте подключение и URL в ApiConfig.';
   }

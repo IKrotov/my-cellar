@@ -27,7 +27,8 @@ class SecurityConfig(
             .authorizeHttpRequests { authz ->
                 authz
                     .requestMatchers("/actuator/health", "/actuator/health/**").permitAll()
-                    .requestMatchers("/api/v1/auth/**").permitAll()
+                    .requestMatchers("/api/v1/auth/login", "/api/v1/auth/register", "/api/v1/auth/refresh").permitAll()
+                    .requestMatchers("/api/v1/auth/**").authenticated()
                     .requestMatchers("/api/v1/users", "/api/v1/users/**").permitAll() // Регистрация открыта
                     .anyRequest().authenticated()
             }

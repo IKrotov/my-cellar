@@ -1,7 +1,5 @@
 package com.akrotov.cellarbackendservice.application.dto
 
-data class RegisterResponse(
-    val login: String,
-    val accessToken: String,
+data class RefreshRequest(
     val refreshToken: String
 )

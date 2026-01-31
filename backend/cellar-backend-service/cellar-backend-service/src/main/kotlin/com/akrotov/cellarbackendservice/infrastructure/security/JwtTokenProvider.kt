@@ -13,16 +13,15 @@ import java.util.*
 class JwtTokenProvider(
     @Value("\${jwt.secret:your-256-bit-secret-key-for-jwt-token-generation-minimum-32-characters}")
     private val jwtSecret: String,
-    @Value("\${jwt.expiration:86400000}") // 24 часа по умолчанию
-    private val jwtExpiration: Long
+    @Value("\${jwt.access-expiration:900000}") // 15 минут по умолчанию
+    private val accessExpiration: Long
 ) {
 
     private val key: Key = Keys.hmacShaKeyFor(jwtSecret.toByteArray())
 
-    fun generateToken(userDetails: UserDetails): String {
+    fun generateAccessToken(userDetails: UserDetails): String {
         val now = Date()
-        val expiryDate = Date(now.time + jwtExpiration)
-
+        val expiryDate = Date(now.time + accessExpiration)
         return Jwts.builder()
             .subject(userDetails.username)
             .issuedAt(now)
@@ -31,10 +30,9 @@ class JwtTokenProvider(
             .compact()
     }
 
-    fun generateToken(userId: Long, username: String): String {
+    fun generateAccessToken(userId: Long, username: String): String {
         val now = Date()
-        val expiryDate = Date(now.time + jwtExpiration)
-
+        val expiryDate = Date(now.time + accessExpiration)
         return Jwts.builder()
             .subject(username)
             .claim("userId", userId)

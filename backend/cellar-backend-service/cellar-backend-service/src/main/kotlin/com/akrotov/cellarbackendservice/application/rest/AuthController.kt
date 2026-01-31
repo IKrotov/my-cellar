@@ -2,6 +2,8 @@ package com.akrotov.cellarbackendservice.application.rest
 
 import com.akrotov.cellarbackendservice.application.dto.LoginRequest
 import com.akrotov.cellarbackendservice.application.dto.LoginResponse
+import com.akrotov.cellarbackendservice.application.dto.RefreshRequest
+import com.akrotov.cellarbackendservice.application.dto.RefreshResponse
 import com.akrotov.cellarbackendservice.application.dto.RegisterRequest
 import com.akrotov.cellarbackendservice.application.dto.RegisterResponse
 import com.akrotov.cellarbackendservice.application.service.UserService
@@ -25,5 +27,15 @@ class AuthController(
     @PostMapping("/register")
     fun register(@RequestBody request: RegisterRequest): ResponseEntity<RegisterResponse> {
         return ResponseEntity.ok(userService.register(request))
+    }
+
+    @PostMapping("/refresh")
+    fun refresh(@RequestBody request: RefreshRequest): ResponseEntity<RefreshResponse> {
+        return ResponseEntity.ok(userService.refreshTokens(request))
+    }
+
+    @PostMapping("/logout")
+    fun logout(): ResponseEntity<Void> {
+        return ResponseEntity.ok().build()
     }
 }
