@@ -1,10 +1,20 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/auth/auth_service.dart';
+import '../../../../core/network/dto/ingredient_dto.dart';
+import '../../../../core/network/ingredients_api.dart';
 import '../../domain/ingredient_item.dart';
 
 /// Нижняя панель с формой добавления ингредиента.
 class AddIngredientSheet extends StatefulWidget {
-  const AddIngredientSheet({super.key});
+  const AddIngredientSheet({
+    super.key,
+    required this.authService,
+    this.onSuccess,
+  });
+
+  final AuthService authService;
+  final VoidCallback? onSuccess;
 
   @override
   State<AddIngredientSheet> createState() => _AddIngredientSheetState();
@@ -17,6 +27,7 @@ class _AddIngredientSheetState extends State<AddIngredientSheet> {
 
   IngredientType _type = IngredientType.vegetable;
   IngredientStockStatus _status = IngredientStockStatus.none;
+  bool _sending = false;
 
   static const _typeLabels = {
     IngredientType.unknown: 'Неизвестно',
@@ -40,14 +51,36 @@ class _AddIngredientSheetState extends State<AddIngredientSheet> {
     super.dispose();
   }
 
-  void _onAdd() {
+  Future<void> _onAdd() async {
     if (!_formKey.currentState!.validate()) return;
-    // Заглушка: API пока не вызываем
+    setState(() => _sending = true);
     final messenger = ScaffoldMessenger.of(context);
-    Navigator.of(context).pop();
-    messenger.showSnackBar(
-      const SnackBar(content: Text('Добавление пока не подключено')),
-    );
+    try {
+      final amountText = _amountController.text.trim();
+      final amount = amountText.isEmpty ? null : int.tryParse(amountText);
+
+      final request = CreateIngredientRequestDto(
+        name: _nameController.text.trim(),
+        type: _type.name.toUpperCase(),
+        status: _status.name.toUpperCase(),
+        amount: amount,
+      );
+
+      final dio = widget.authService.getApiClient().dio;
+      final api = IngredientsApi(dio);
+      await api.create(request);
+
+      if (!mounted) return;
+      Navigator.of(context).pop();
+      widget.onSuccess?.call();
+      messenger.showSnackBar(const SnackBar(content: Text('Ингредиент добавлен')));
+    } catch (e) {
+      if (!mounted) return;
+      setState(() => _sending = false);
+      messenger.showSnackBar(
+        SnackBar(content: Text(messageFromIngredientError(e))),
+      );
+    }
   }
 
   @override
@@ -141,13 +174,19 @@ class _AddIngredientSheetState extends State<AddIngredientSheet> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 TextButton(
-                  onPressed: () => Navigator.of(context).pop(),
+                  onPressed: _sending ? null : () => Navigator.of(context).pop(),
                   child: const Text('Отмена'),
                 ),
                 const SizedBox(width: 8),
                 FilledButton(
-                  onPressed: _onAdd,
-                  child: const Text('Добавить'),
+                  onPressed: _sending ? null : _onAdd,
+                  child: _sending
+                      ? const SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : const Text('Добавить'),
                 ),
               ],
             ),

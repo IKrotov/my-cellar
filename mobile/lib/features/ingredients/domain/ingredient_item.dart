@@ -17,12 +17,14 @@ enum IngredientStockStatus {
 
 /// Элемент списка ингредиентов для карточки.
 class IngredientItem {
+  final int? id;
   final String name;
   final IngredientType type;
   final int? amount;
   final IngredientStockStatus status;
 
   const IngredientItem({
+    this.id,
     required this.name,
     required this.type,
     this.amount,
