@@ -1,7 +1,29 @@
 import 'package:flutter/material.dart';
 
+import '../widgets/add_ingredient_sheet.dart';
+import '../widgets/ingredient_card.dart';
+import '../../domain/ingredient_item.dart';
+
 class IngredientsPage extends StatelessWidget {
   const IngredientsPage({super.key});
+
+  static const _mockIngredients = [
+    IngredientItem(
+      name: 'Чеснок',
+      type: IngredientType.vegetable,
+      amount: 3,
+    ),
+    IngredientItem(
+      name: 'Паприка',
+      type: IngredientType.spice,
+      status: IngredientStockStatus.medium,
+    ),
+    IngredientItem(
+      name: 'Куриная грудка',
+      type: IngredientType.meat,
+      status: IngredientStockStatus.few,
+    ),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -10,36 +32,25 @@ class IngredientsPage extends StatelessWidget {
         title: const Text('Ингредиенты'),
         centerTitle: true,
       ),
-      body: const Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.restaurant,
-              size: 64,
-              color: Colors.grey,
-            ),
-            SizedBox(height: 16),
-            Text(
-              'Список ингредиентов',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.w500,
-                color: Colors.grey,
-              ),
-            ),
-            SizedBox(height: 8),
-            Text(
-              'Скоро здесь будет список ваших ингредиентов',
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.grey,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
+      body: ListView.builder(
+        padding: const EdgeInsets.symmetric(vertical: 12),
+        itemCount: _mockIngredients.length,
+        itemBuilder: (context, index) {
+          return IngredientCard(item: _mockIngredients[index]);
+        },
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          showModalBottomSheet<void>(
+            context: context,
+            isScrollControlled: true,
+            builder: (context) => const AddIngredientSheet(),
+          );
+        },
+        tooltip: 'Добавить ингредиент',
+        child: const Icon(Icons.add),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 }
