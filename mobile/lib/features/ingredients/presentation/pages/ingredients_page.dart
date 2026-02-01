@@ -1,11 +1,18 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/auth/auth_service.dart';
+import '../../../settings/presentation/pages/settings_page.dart';
 import '../widgets/add_ingredient_sheet.dart';
 import '../widgets/ingredient_card.dart';
 import '../../domain/ingredient_item.dart';
 
 class IngredientsPage extends StatelessWidget {
-  const IngredientsPage({super.key});
+  const IngredientsPage({
+    super.key,
+    required this.authService,
+  });
+
+  final AuthService authService;
 
   static const _mockIngredients = [
     IngredientItem(
@@ -31,6 +38,19 @@ class IngredientsPage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Ингредиенты'),
         centerTitle: true,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.settings),
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (context) => SettingsPage(authService: authService),
+                ),
+              );
+            },
+            tooltip: 'Настройки',
+          ),
+        ],
       ),
       body: ListView.builder(
         padding: const EdgeInsets.symmetric(vertical: 12),

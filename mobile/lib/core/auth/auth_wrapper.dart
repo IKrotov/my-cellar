@@ -51,7 +51,7 @@ class _AuthWrapperState extends State<AuthWrapper> {
           ),
         ),
       UnauthenticatedState() => LoginPage(authService: widget.authService),
-      AuthenticatedState() => const IngredientsPage(),
+      AuthenticatedState() => IngredientsPage(authService: widget.authService),
     };
   }
 }
