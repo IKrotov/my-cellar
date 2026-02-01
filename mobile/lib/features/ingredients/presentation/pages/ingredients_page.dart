@@ -161,7 +161,11 @@ class _IngredientsPageState extends State<IngredientsPage> {
       padding: const EdgeInsets.symmetric(vertical: 12),
       itemCount: _ingredients.length,
       itemBuilder: (context, index) {
-        return IngredientCard(item: _ingredients[index]);
+        return IngredientCard(
+          item: _ingredients[index],
+          authService: widget.authService,
+          onUpdated: _loadIngredients,
+        );
       },
     );
   }

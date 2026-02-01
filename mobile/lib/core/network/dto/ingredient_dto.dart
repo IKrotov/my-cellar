@@ -22,6 +22,28 @@ class CreateIngredientRequestDto {
       };
 }
 
+/// Запрос обновления ингредиента (совпадает с бэкендом).
+class UpdateIngredientRequestDto {
+  final String name;
+  final String type;
+  final String status;
+  final int? amount;
+
+  const UpdateIngredientRequestDto({
+    required this.name,
+    required this.type,
+    required this.status,
+    this.amount,
+  });
+
+  Map<String, dynamic> toJson() => {
+        'name': name,
+        'type': type,
+        'status': status,
+        if (amount != null) 'amount': amount,
+      };
+}
+
 /// Ответ бэкенда по ингредиенту.
 class IngredientResponseDto {
   final int? id;
