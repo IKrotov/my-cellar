@@ -24,14 +24,19 @@ class _AuthWrapperState extends State<AuthWrapper> {
   @override
   void initState() {
     super.initState();
-    
-    // Подписываемся на изменения состояния
+
     _authSubscription = widget.authService.stateStream.listen((state) {
-      setState(() {}); // Обновляем UI при изменении состояния
+      setState(() {});
     });
-    
-    // Инициализируем проверку токена
-    widget.authService.initialize();
+
+    // Сначала отрисовываем первый кадр, затем с задержкой читаем Keychain —
+    // на iOS при холодном старте Keychain может быть ещё недоступен.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Future.delayed(const Duration(milliseconds: 300), () {
+        if (!mounted) return;
+        widget.authService.initialize();
+      });
+    });
   }
 
   @override

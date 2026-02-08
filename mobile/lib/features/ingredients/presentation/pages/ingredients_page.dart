@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/auth/auth_service.dart';
 import '../../../../core/network/dto/ingredient_dto.dart';
 import '../../../../core/network/ingredients_api.dart';
+import '../../../../generated/l10n/app_localizations.dart';
 import '../../../settings/presentation/pages/settings_page.dart';
 import '../widgets/add_ingredient_sheet.dart';
 import '../widgets/ingredient_card.dart';
@@ -58,18 +59,25 @@ class _IngredientsPageState extends State<IngredientsPage> {
     showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
-      builder: (context) => AddIngredientSheet(
-        authService: widget.authService,
-        onSuccess: _loadIngredients,
+      useSafeArea: true,
+      builder: (context) => Padding(
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom,
+        ),
+        child: AddIngredientSheet(
+          authService: widget.authService,
+          onSuccess: _loadIngredients,
+        ),
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Ингредиенты'),
+        title: Text(l10n.ingredients),
         centerTitle: true,
         actions: [
           IconButton(
@@ -81,14 +89,14 @@ class _IngredientsPageState extends State<IngredientsPage> {
                 ),
               );
             },
-            tooltip: 'Настройки',
+            tooltip: l10n.settingsTooltip,
           ),
         ],
       ),
-      body: _buildBody(),
+      body: _buildBody(context),
       floatingActionButton: FloatingActionButton(
         onPressed: _openAddSheet,
-        tooltip: 'Добавить ингредиент',
+        tooltip: l10n.addIngredientTooltip,
         child: const Icon(Icons.add),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
@@ -121,7 +129,8 @@ class _IngredientsPageState extends State<IngredientsPage> {
     return IngredientStockStatus.none;
   }
 
-  Widget _buildBody() {
+  Widget _buildBody(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     if (_loading) {
       return const Center(child: CircularProgressIndicator());
     }
@@ -140,7 +149,7 @@ class _IngredientsPageState extends State<IngredientsPage> {
               const SizedBox(height: 16),
               FilledButton.tonal(
                 onPressed: _loadIngredients,
-                child: const Text('Повторить'),
+                child: Text(l10n.retry),
               ),
             ],
           ),
@@ -150,7 +159,7 @@ class _IngredientsPageState extends State<IngredientsPage> {
     if (_ingredients.isEmpty) {
       return Center(
         child: Text(
-          'Нет ингредиентов',
+          l10n.noIngredients,
           style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                 color: Theme.of(context).colorScheme.onSurfaceVariant,
               ),

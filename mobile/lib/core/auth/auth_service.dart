@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
+
 import '../network/api_client.dart';
 import '../network/auth_api.dart';
 import '../network/dto/auth_dto.dart';
@@ -22,18 +24,25 @@ class AuthService {
   Stream<AuthState> get stateStream => _stateController.stream;
 
   /// Инициализация — чтение сохранённого токена при запуске.
+  /// Ошибки (например Keychain на iOS при холодном старте) перехватываются — показываем экран входа.
   Future<void> initialize() async {
-    final stored = await _tokenStorage.read();
-    if (stored.accessToken != null &&
-        stored.accessToken!.isNotEmpty &&
-        stored.username != null &&
-        stored.username!.isNotEmpty) {
-      _updateState(AuthenticatedState(
-        token: stored.accessToken!,
-        userId: stored.username!,
-        username: stored.username!,
-      ));
-    } else {
+    try {
+      final stored = await _tokenStorage.read();
+      if (stored.accessToken != null &&
+          stored.accessToken!.isNotEmpty &&
+          stored.username != null &&
+          stored.username!.isNotEmpty) {
+        _updateState(AuthenticatedState(
+          token: stored.accessToken!,
+          userId: stored.username!,
+          username: stored.username!,
+        ));
+      } else {
+        _updateState(const UnauthenticatedState());
+      }
+    } catch (e, st) {
+      debugPrint('AuthService.initialize error: $e');
+      debugPrint(st.toString());
       _updateState(const UnauthenticatedState());
     }
   }
@@ -102,10 +111,12 @@ class AuthService {
     );
   }
 
-  /// Обновление пары токенов по refresh token. Вызывается интерцептором при 401.
+  /// Обновление пары токенов по refresh token. Вызывается интерцептором при 401/403.
+  /// При неудаче (нет refresh, истёк refresh, сеть) переводит в UnauthenticatedState и возвращает null.
   Future<String?> _performRefresh() async {
     final stored = await _tokenStorage.read();
     if (stored.refreshToken == null || stored.refreshToken!.isEmpty) {
+      _updateState(const UnauthenticatedState());
       return null;
     }
     try {
@@ -126,6 +137,8 @@ class AuthService {
       }
       return response.accessToken;
     } catch (_) {
+      await _tokenStorage.clear();
+      _updateState(const UnauthenticatedState());
       return null;
     }
   }

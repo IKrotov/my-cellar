@@ -2,16 +2,19 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/auth/auth_service.dart';
 import '../../../../core/auth/auth_state.dart';
+import '../../../../core/l10n/locale_scope.dart';
+import '../../../../generated/l10n/app_localizations.dart';
 
-/// Язык приложения (пока заглушка).
+/// Язык приложения.
 enum AppLanguage {
-  ru('Русский'),
-  en('English'),
-  es('Español'),
-  de('Deutsch');
+  ru('Русский', 'ru'),
+  en('English', 'en'),
+  es('Español', 'es'),
+  de('Deutsch', 'de');
 
-  const AppLanguage(this.label);
+  const AppLanguage(this.label, this.languageCode);
   final String label;
+  final String languageCode;
 }
 
 /// Страница настроек: пользователь, тема, язык, выход.
@@ -31,24 +34,24 @@ class _SettingsPageState extends State<SettingsPage> {
   /// Тёмная тема (пока только локальное состояние, не применяется).
   bool _darkTheme = false;
 
-  /// Выбранный язык (пока только локальное состояние, не применяется).
-  AppLanguage _language = AppLanguage.ru;
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
+    final localeScope = LocaleScope.of(context);
+    final currentLanguageCode = localeScope.locale.languageCode;
     final state = widget.authService.currentState;
     final username = state is AuthenticatedState ? state.username : '—';
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Настройки'),
+        title: Text(l10n.settings),
         centerTitle: true,
       ),
       body: ListView(
         padding: const EdgeInsets.all(24),
         children: [
-          _sectionTitle(theme, 'Пользователь'),
+          _sectionTitle(theme, l10n.user),
           const SizedBox(height: 8),
           Text(
             username,
@@ -57,35 +60,32 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
           ),
           const SizedBox(height: 32),
-          _sectionTitle(theme, 'Тема'),
+          _sectionTitle(theme, l10n.theme),
           const SizedBox(height: 8),
           SwitchListTile(
             value: _darkTheme,
             onChanged: (value) {
               setState(() => _darkTheme = value);
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Переключение темы пока не подключено')),
+                SnackBar(content: Text(l10n.themeSwitchNotConnected)),
               );
             },
-            title: Text(_darkTheme ? 'Тёмная' : 'Светлая'),
-            subtitle: const Text('Светлая / тёмная тема'),
+            title: Text(_darkTheme ? l10n.themeDark : l10n.themeLight),
+            subtitle: Text(l10n.themeSubtitle),
           ),
           const SizedBox(height: 24),
-          _sectionTitle(theme, 'Язык'),
+          _sectionTitle(theme, l10n.language),
           const SizedBox(height: 8),
           Wrap(
             spacing: 8,
             runSpacing: 8,
             children: AppLanguage.values.map((lang) {
-              final isSelected = _language == lang;
+              final isSelected = currentLanguageCode == lang.languageCode;
               return FilterChip(
                 label: Text(lang.label),
                 selected: isSelected,
                 onSelected: (_) {
-                  setState(() => _language = lang);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Смена языка пока не подключена')),
-                  );
+                  localeScope.setLocale(Locale(lang.languageCode));
                 },
               );
             }).toList(),
@@ -97,7 +97,7 @@ class _SettingsPageState extends State<SettingsPage> {
               Navigator.of(context).pop();
               await widget.authService.logout();
             },
-            child: const Text('Выйти'),
+            child: Text(l10n.logout),
           ),
         ],
       ),

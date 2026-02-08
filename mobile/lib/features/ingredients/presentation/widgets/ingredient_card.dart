@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/auth/auth_service.dart';
 import '../../../../core/network/dto/ingredient_dto.dart';
 import '../../../../core/network/ingredients_api.dart';
+import '../../../../generated/l10n/app_localizations.dart';
 import '../../domain/ingredient_item.dart';
 
 /// Карточка ингредиента: по нажатию раскрывается с редактированием количества и статуса.
@@ -28,13 +29,6 @@ class _IngredientCardState extends State<IngredientCard> {
   late IngredientStockStatus _status;
   bool _saving = false;
   bool _deleting = false;
-
-  static const _statusLabels = {
-    IngredientStockStatus.none: 'Нет',
-    IngredientStockStatus.few: 'Мало',
-    IngredientStockStatus.medium: 'Средне',
-    IngredientStockStatus.high: 'Много',
-  };
 
   @override
   void initState() {
@@ -85,7 +79,9 @@ class _IngredientCardState extends State<IngredientCard> {
         _expanded = false;
       });
       widget.onUpdated();
-      messenger.showSnackBar(const SnackBar(content: Text('Данные обновлены')));
+      messenger.showSnackBar(
+        SnackBar(content: Text(AppLocalizations.of(context)!.dataUpdated)),
+      );
     } catch (e) {
       if (!mounted) return;
       setState(() => _saving = false);
@@ -98,24 +94,23 @@ class _IngredientCardState extends State<IngredientCard> {
   Future<void> _deleteIngredient() async {
     final id = widget.item.id;
     if (id == null) return;
+    final l10n = AppLocalizations.of(context)!;
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Удалить ингредиент?'),
-        content: Text(
-          'Ингредиент «${widget.item.name}» будет удалён. Это действие нельзя отменить.',
-        ),
+        title: Text(l10n.deleteIngredientConfirm),
+        content: Text(l10n.deleteIngredientMessage(widget.item.name)),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Отмена'),
+            child: Text(l10n.cancel),
           ),
           FilledButton(
             onPressed: () => Navigator.of(context).pop(true),
             style: FilledButton.styleFrom(
               backgroundColor: Theme.of(context).colorScheme.error,
             ),
-            child: const Text('Удалить'),
+            child: Text(l10n.delete),
           ),
         ],
       ),
@@ -128,7 +123,9 @@ class _IngredientCardState extends State<IngredientCard> {
       await api.delete(id);
       if (!mounted) return;
       widget.onUpdated();
-      messenger.showSnackBar(const SnackBar(content: Text('Ингредиент удалён')));
+      messenger.showSnackBar(
+        SnackBar(content: Text(AppLocalizations.of(context)!.ingredientDeleted)),
+      );
     } catch (e) {
       if (!mounted) return;
       setState(() => _deleting = false);
@@ -168,10 +165,40 @@ class _IngredientCardState extends State<IngredientCard> {
     }
   }
 
+  static String _statusLabel(AppLocalizations l10n, IngredientStockStatus s) {
+    switch (s) {
+      case IngredientStockStatus.none:
+        return l10n.statusNone;
+      case IngredientStockStatus.few:
+        return l10n.statusFew;
+      case IngredientStockStatus.medium:
+        return l10n.statusMedium;
+      case IngredientStockStatus.high:
+        return l10n.statusHigh;
+    }
+  }
+
+  String _quantityOrStatusLabel(BuildContext context) {
+    final item = widget.item;
+    if (item.amount != null) return item.amount.toString();
+    final l10n = AppLocalizations.of(context)!;
+    switch (item.status) {
+      case IngredientStockStatus.none:
+        return l10n.statusNone;
+      case IngredientStockStatus.few:
+        return l10n.statusFew;
+      case IngredientStockStatus.medium:
+        return l10n.statusMedium;
+      case IngredientStockStatus.high:
+        return l10n.statusHigh;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final item = widget.item;
+    final l10n = AppLocalizations.of(context)!;
     final iconColor = _colorForType(item.type);
 
     return Card(
@@ -218,7 +245,7 @@ class _IngredientCardState extends State<IngredientCard> {
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          item.quantityOrStatusLabel,
+                          _quantityOrStatusLabel(context),
                           style: theme.textTheme.bodyMedium?.copyWith(
                             color: theme.colorScheme.onSurfaceVariant,
                           ),
@@ -237,7 +264,7 @@ class _IngredientCardState extends State<IngredientCard> {
                 const Divider(height: 1),
                 const SizedBox(height: 16),
                 Text(
-                  'Количество (число)',
+                  l10n.quantityNumber,
                   style: theme.textTheme.titleSmall?.copyWith(
                     color: theme.colorScheme.onSurfaceVariant,
                   ),
@@ -245,9 +272,9 @@ class _IngredientCardState extends State<IngredientCard> {
                 const SizedBox(height: 8),
                 TextField(
                   controller: _amountController,
-                  decoration: const InputDecoration(
-                    hintText: 'Число или оставьте пустым',
-                    border: OutlineInputBorder(),
+                  decoration: InputDecoration(
+                    hintText: l10n.quantityOrStatusHint,
+                    border: const OutlineInputBorder(),
                     isDense: true,
                   ),
                   keyboardType: TextInputType.number,
@@ -255,7 +282,7 @@ class _IngredientCardState extends State<IngredientCard> {
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  'Статус наличия',
+                  l10n.statusLabel,
                   style: theme.textTheme.titleSmall?.copyWith(
                     color: theme.colorScheme.onSurfaceVariant,
                   ),
@@ -270,7 +297,7 @@ class _IngredientCardState extends State<IngredientCard> {
                   items: IngredientStockStatus.values
                       .map((s) => DropdownMenuItem(
                             value: s,
-                            child: Text(_statusLabels[s]!),
+                            child: Text(_statusLabel(l10n, s)),
                           ))
                       .toList(),
                   onChanged: (_saving || _deleting)
@@ -293,7 +320,7 @@ class _IngredientCardState extends State<IngredientCard> {
                             : theme.colorScheme.error,
                       ),
                       label: Text(
-                        'Удалить',
+                        l10n.delete,
                         style: TextStyle(
                           color: (_saving || _deleting)
                               ? theme.colorScheme.onSurface.withOpacity(0.38)
@@ -309,7 +336,7 @@ class _IngredientCardState extends State<IngredientCard> {
                           )
                         : FilledButton(
                             onPressed: _saveAmount,
-                            child: const Text('Сохранить'),
+                            child: Text(l10n.save),
                           ),
                   ],
                 ),
