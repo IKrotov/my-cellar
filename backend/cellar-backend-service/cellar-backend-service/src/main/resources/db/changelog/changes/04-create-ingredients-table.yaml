@@ -14,7 +14,7 @@ databaseChangeLog:
                     primaryKey: true
                     nullable: false
               - column:
-                  name: user_id
+                  name: cellar_id
                   type: bigint
                   constraints:
                     nullable: false
@@ -42,19 +42,19 @@ databaseChangeLog:
 
         - addForeignKeyConstraint:
             baseTableName: ingredients
-            baseColumnNames: user_id
-            constraintName: fk_ingredients_user_id
-            referencedTableName: users
+            baseColumnNames: cellar_id
+            constraintName: fk_ingredients_cellar_id
+            referencedTableName: cellars
             referencedColumnNames: id
             onDelete: CASCADE
             onUpdate: CASCADE
 
         - createIndex:
             tableName: ingredients
-            indexName: idx_ingredients_user_id
+            indexName: idx_ingredients_cellar_id
             columns:
               - column:
-                  name: user_id
+                  name: cellar_id
 
         - createIndex:
             tableName: ingredients
