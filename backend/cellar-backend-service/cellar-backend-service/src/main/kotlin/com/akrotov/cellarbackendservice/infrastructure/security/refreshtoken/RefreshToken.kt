@@ -1,4 +1,4 @@
-package com.akrotov.cellarbackendservice.domain.refreshtoken
+package com.akrotov.cellarbackendservice.infrastructure.security.refreshtoken
 
 import com.akrotov.cellarbackendservice.domain.user.User
 import jakarta.persistence.Column

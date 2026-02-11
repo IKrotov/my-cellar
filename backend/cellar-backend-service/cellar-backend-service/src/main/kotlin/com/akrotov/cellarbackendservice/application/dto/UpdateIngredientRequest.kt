@@ -5,7 +5,7 @@ import com.akrotov.cellarbackendservice.domain.ingredient.IngredientType
 
 data class UpdateIngredientRequest(
     var id: Long? = null,
-    var userId : Long? = null,
+    var cellarId: Long? = null,
     val name: String,
     val type: IngredientType,
     val status: IngredientStockStatus,

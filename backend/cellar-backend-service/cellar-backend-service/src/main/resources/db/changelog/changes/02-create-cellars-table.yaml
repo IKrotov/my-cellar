@@ -1,0 +1,47 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-cellars-table
+      author: cellar-backend
+      changes:
+        - createTable:
+            tableName: cellars
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: owner_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+
+        - addForeignKeyConstraint:
+            baseTableName: cellars
+            baseColumnNames: owner_id
+            constraintName: fk_cellars_owner_id
+            referencedTableName: users
+            referencedColumnNames: id
+            onDelete: CASCADE
+            onUpdate: CASCADE
+
+        - createIndex:
+            tableName: cellars
+            indexName: idx_cellars_owner_id
+            columns:
+              - column:
+                  name: owner_id
+        - createIndex:
+            tableName: cellars
+            indexName: idx_cellars_name
+            columns:
+              - column:
+                  name: name

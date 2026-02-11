@@ -17,33 +17,47 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("/api/v1/ingredients")
+@RequestMapping("/api/v1/cellars/{cellarId}/ingredients")
 class IngredientController(
     private val ingredientService: IngredientService
 ) {
 
     @GetMapping
-    fun listIngredients(@AuthenticationPrincipal userPrincipal: CustomUserPrincipal) : ResponseEntity<List<IngredientResponseDto>> {
-        return ResponseEntity.ok(ingredientService.getIngredients(userPrincipal.userId))
+    fun listIngredients(
+        @PathVariable cellarId: Long,
+        @AuthenticationPrincipal userPrincipal: CustomUserPrincipal
+    ): ResponseEntity<List<IngredientResponseDto>> {
+        return ResponseEntity.ok(ingredientService.getIngredients(userPrincipal.userId, cellarId))
     }
 
     @PostMapping
-    fun createIngredient(@RequestBody request: CreateIngredientRequest,
-                         @AuthenticationPrincipal userPrincipal: CustomUserPrincipal): ResponseEntity<IngredientResponseDto> {
-        request.userId = userPrincipal.userId
-        return ResponseEntity.ok(ingredientService.addIngredient(request))
+    fun createIngredient(
+        @PathVariable cellarId: Long,
+        @RequestBody request: CreateIngredientRequest,
+        @AuthenticationPrincipal userPrincipal: CustomUserPrincipal
+    ): ResponseEntity<IngredientResponseDto> {
+        request.cellarId = cellarId
+        return ResponseEntity.ok(ingredientService.addIngredient(request, userPrincipal.userId))
     }
 
     @PutMapping("/{ingredientId}")
-    fun updateIngredient(@PathVariable ingredientId: Long, @RequestBody request: UpdateIngredientRequest,
-                         @AuthenticationPrincipal userPrincipal: CustomUserPrincipal) : ResponseEntity<IngredientResponseDto> {
+    fun updateIngredient(
+        @PathVariable cellarId: Long,
+        @PathVariable ingredientId: Long,
+        @RequestBody request: UpdateIngredientRequest,
+        @AuthenticationPrincipal userPrincipal: CustomUserPrincipal
+    ): ResponseEntity<IngredientResponseDto> {
         request.id = ingredientId
-        request.userId = userPrincipal.userId
-        return ResponseEntity.ok(ingredientService.updateIngredient(request))
+        request.cellarId = cellarId
+        return ResponseEntity.ok(ingredientService.updateIngredient(request, userPrincipal.userId))
     }
 
     @DeleteMapping("/{ingredientId}")
-    fun deleteIngredient(@PathVariable ingredientId: Long, @AuthenticationPrincipal userPrincipal: CustomUserPrincipal){
-        ingredientService.deleteIngredient(userPrincipal.userId, ingredientId)
+    fun deleteIngredient(
+        @PathVariable cellarId: Long,
+        @PathVariable ingredientId: Long,
+        @AuthenticationPrincipal userPrincipal: CustomUserPrincipal
+    ) {
+        ingredientService.deleteIngredient(userPrincipal.userId, cellarId, ingredientId)
     }
 }

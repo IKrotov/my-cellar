@@ -11,7 +11,7 @@ import org.mapstruct.Mapping
 interface IngredientMapper {
     fun toEntity(dto: CreateIngredientRequest): Ingredient {
         return Ingredient(
-            userId = dto.userId ?: throw IllegalArgumentException("userId cannot be null"),
+            cellarId = dto.cellarId ?: throw IllegalArgumentException("cellarId cannot be null"),
             name = dto.name,
             type = dto.type,
             status = dto.status,
@@ -25,7 +25,7 @@ interface IngredientMapper {
     
     fun updateEntityFromRequest(request: UpdateIngredientRequest, ingredient: Ingredient): Ingredient {
         return Ingredient(
-            userId = ingredient.userId,
+            cellarId = ingredient.cellarId,
             name = request.name,
             type = request.type,
             status = request.status,

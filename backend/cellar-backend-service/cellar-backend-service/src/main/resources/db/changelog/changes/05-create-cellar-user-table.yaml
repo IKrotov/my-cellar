@@ -1,0 +1,47 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-cellar-user-table
+      author: cellar-backend
+      changes:
+        - createTable:
+            tableName: cellar_user
+            columns:
+              - column:
+                  name: cellar_id
+                  type: bigint
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_cellar_user
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: bigint
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_cellar_user
+                    nullable: false
+
+        - addForeignKeyConstraint:
+            baseTableName: cellar_user
+            baseColumnNames: cellar_id
+            constraintName: fk_cellar_user_cellar_id
+            referencedTableName: cellars
+            referencedColumnNames: id
+            onDelete: CASCADE
+            onUpdate: CASCADE
+
+        - addForeignKeyConstraint:
+            baseTableName: cellar_user
+            baseColumnNames: user_id
+            constraintName: fk_cellar_user_user_id
+            referencedTableName: users
+            referencedColumnNames: id
+            onDelete: CASCADE
+            onUpdate: CASCADE
+
+        - createIndex:
+            tableName: cellar_user
+            indexName: idx_cellar_user_user_id
+            columns:
+              - column:
+                  name: user_id

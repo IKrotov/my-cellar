@@ -4,5 +4,5 @@ import org.springframework.data.jpa.repository.JpaRepository
 
 interface IngredientRepository : JpaRepository<Ingredient, Long> {
 
-    fun findIngredientsByUserId(userId: Long): List<Ingredient>
+    fun findByCellarId(cellarId: Long): List<Ingredient>
 }

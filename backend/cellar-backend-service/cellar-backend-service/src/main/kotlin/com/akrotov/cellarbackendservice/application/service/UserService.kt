@@ -11,8 +11,8 @@ import com.akrotov.cellarbackendservice.application.exception.AuthenticationExce
 import com.akrotov.cellarbackendservice.application.exception.InvalidRefreshTokenException
 import com.akrotov.cellarbackendservice.application.exception.RegistrationFailedException
 import com.akrotov.cellarbackendservice.application.mapper.UserMapper
-import com.akrotov.cellarbackendservice.domain.refreshtoken.RefreshToken
-import com.akrotov.cellarbackendservice.domain.refreshtoken.RefreshTokenRepository
+import com.akrotov.cellarbackendservice.infrastructure.security.refreshtoken.RefreshToken
+import com.akrotov.cellarbackendservice.infrastructure.security.refreshtoken.RefreshTokenRepository
 import com.akrotov.cellarbackendservice.domain.user.User
 import com.akrotov.cellarbackendservice.domain.user.UserRepository
 import com.akrotov.cellarbackendservice.infrastructure.security.JwtTokenProvider

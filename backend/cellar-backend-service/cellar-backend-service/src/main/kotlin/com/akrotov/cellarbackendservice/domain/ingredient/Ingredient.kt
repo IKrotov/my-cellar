@@ -13,8 +13,8 @@ import jakarta.persistence.Table
 @Entity
 data class Ingredient(
 
-    @Column(name = "user_id", nullable = false)
-    val userId: Long,
+    @Column(name = "cellar_id", nullable = false)
+    val cellarId: Long,
 
     @Column(name = "name", nullable = false)
     val name: String,
