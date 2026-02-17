@@ -142,4 +142,13 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get nameRequired => 'Bitte Namen eingeben';
+
+  @override
+  String get newCellar => 'Neuer Keller';
+
+  @override
+  String get cellars => 'Keller';
+
+  @override
+  String get noCellars => 'Keine Keller';
 }

@@ -1,0 +1,40 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-created-at-updated-at-to-cellars
+      author: cellar-backend
+      changes:
+        - addColumn:
+            tableName: cellars
+            columns:
+              - column:
+                  name: created_at
+                  type: timestamp with time zone
+                  constraints:
+                    nullable: false
+                  defaultValueComputed: current_timestamp
+              - column:
+                  name: updated_at
+                  type: timestamp with time zone
+                  constraints:
+                    nullable: false
+                  defaultValueComputed: current_timestamp
+
+  - changeSet:
+      id: add-created-at-updated-at-to-ingredients
+      author: cellar-backend
+      changes:
+        - addColumn:
+            tableName: ingredients
+            columns:
+              - column:
+                  name: created_at
+                  type: timestamp with time zone
+                  constraints:
+                    nullable: false
+                  defaultValueComputed: current_timestamp
+              - column:
+                  name: updated_at
+                  type: timestamp with time zone
+                  constraints:
+                    nullable: false
+                  defaultValueComputed: current_timestamp

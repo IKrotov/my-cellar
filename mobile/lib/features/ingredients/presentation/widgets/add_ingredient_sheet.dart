@@ -2,20 +2,26 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/auth/auth_service.dart';
 import '../../../../core/network/dto/ingredient_dto.dart';
-import '../../../../core/network/ingredients_api.dart';
+import '../../../../core/repository/ingredient_repository.dart';
 import '../../../../generated/l10n/app_localizations.dart';
 import '../../domain/ingredient_item.dart';
 
 /// Нижняя панель с формой добавления ингредиента.
+/// Сначала сохраняем в локальную БД (pending), затем в фоне отправляем на бэкенд; при успехе помечаем синхронизацию.
 class AddIngredientSheet extends StatefulWidget {
   const AddIngredientSheet({
     super.key,
     required this.authService,
-    this.onSuccess,
+    required this.cellarId,
+    required this.ingredientRepository,
+    this.onAdded,
   });
 
   final AuthService authService;
-  final VoidCallback? onSuccess;
+  final int cellarId;
+  final IngredientRepository ingredientRepository;
+  /// Вызывается после вставки в локальную БД: (localId, request) — родитель обновляет список и запускает фоновую синхронизацию.
+  final void Function(int localId, CreateIngredientRequestDto request)? onAdded;
 
   @override
   State<AddIngredientSheet> createState() => _AddIngredientSheetState();
@@ -44,21 +50,29 @@ class _AddIngredientSheetState extends State<AddIngredientSheet> {
     try {
       final amountText = _amountController.text.trim();
       final amount = amountText.isEmpty ? null : int.tryParse(amountText);
+      final name = _nameController.text.trim();
+      final typeStr = _type.name.toUpperCase();
+      final statusStr = _status.name.toUpperCase();
 
       final request = CreateIngredientRequestDto(
-        name: _nameController.text.trim(),
-        type: _type.name.toUpperCase(),
-        status: _status.name.toUpperCase(),
+        name: name,
+        type: typeStr,
+        status: statusStr,
         amount: amount,
       );
 
-      final dio = widget.authService.getApiClient().dio;
-      final api = IngredientsApi(dio);
-      await api.create(request);
+      final localId = await widget.ingredientRepository.insert(
+        cellarId: widget.cellarId,
+        name: name,
+        type: typeStr,
+        status: statusStr,
+        amount: amount,
+        syncStatus: 'pending',
+      );
 
       if (!mounted) return;
       Navigator.of(context).pop();
-      widget.onSuccess?.call();
+      widget.onAdded?.call(localId, request);
       messenger.showSnackBar(
         SnackBar(content: Text(AppLocalizations.of(context)!.ingredientAdded)),
       );

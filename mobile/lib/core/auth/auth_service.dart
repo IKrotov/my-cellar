@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 
+import '../database/app_database.dart';
 import '../network/api_client.dart';
 import '../network/auth_api.dart';
 import '../network/dto/auth_dto.dart';
@@ -95,9 +96,10 @@ class AuthService {
     }
   }
 
-  /// Выход.
+  /// Выход. Очищает токены и локальную БД (данные текущего пользователя).
   Future<void> logout() async {
     await _tokenStorage.clear();
+    await AppDatabase.clearAll();
     _updateState(const UnauthenticatedState());
   }
 
@@ -138,6 +140,7 @@ class AuthService {
       return response.accessToken;
     } catch (_) {
       await _tokenStorage.clear();
+      await AppDatabase.clearAll();
       _updateState(const UnauthenticatedState());
       return null;
     }

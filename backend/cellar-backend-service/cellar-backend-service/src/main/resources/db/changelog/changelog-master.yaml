@@ -9,3 +9,5 @@ databaseChangeLog:
       file: db/changelog/changes/04-create-ingredients-table.yaml
   - include:
       file: db/changelog/changes/05-create-cellar-user-table.yaml
+  - include:
+      file: db/changelog/changes/06-add-created-updated-at-to-cellars-and-ingredients.yaml

@@ -368,6 +368,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Please enter a name'**
   String get nameRequired;
+
+  /// No description provided for @newCellar.
+  ///
+  /// In en, this message translates to:
+  /// **'New cellar'**
+  String get newCellar;
+
+  /// No description provided for @cellars.
+  ///
+  /// In en, this message translates to:
+  /// **'Cellars'**
+  String get cellars;
+
+  /// No description provided for @noCellars.
+  ///
+  /// In en, this message translates to:
+  /// **'No cellars'**
+  String get noCellars;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -142,4 +142,13 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get nameRequired => 'Introduce un nombre';
+
+  @override
+  String get newCellar => 'Nueva bodega';
+
+  @override
+  String get cellars => 'Bodegas';
+
+  @override
+  String get noCellars => 'Sin bodegas';
 }

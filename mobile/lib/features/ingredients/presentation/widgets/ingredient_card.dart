@@ -12,11 +12,13 @@ class IngredientCard extends StatefulWidget {
     super.key,
     required this.item,
     required this.authService,
+    required this.cellarId,
     required this.onUpdated,
   });
 
   final IngredientItem item;
   final AuthService authService;
+  final int cellarId;
   final VoidCallback onUpdated;
 
   @override
@@ -71,7 +73,7 @@ class _IngredientCardState extends State<IngredientCard> {
       );
 
       final api = IngredientsApi(widget.authService.getApiClient().dio);
-      await api.update(id, request);
+      await api.update(widget.cellarId, id, request);
 
       if (!mounted) return;
       setState(() {
@@ -120,7 +122,7 @@ class _IngredientCardState extends State<IngredientCard> {
     final messenger = ScaffoldMessenger.of(context);
     try {
       final api = IngredientsApi(widget.authService.getApiClient().dio);
-      await api.delete(id);
+      await api.delete(widget.cellarId, id);
       if (!mounted) return;
       widget.onUpdated();
       messenger.showSnackBar(

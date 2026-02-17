@@ -44,5 +44,8 @@
   "deleteIngredientMessage": "Ингредиент «{name}» будет удалён. Это действие нельзя отменить.",
   "settingsTooltip": "Настройки",
   "addIngredientTooltip": "Добавить ингредиент",
-  "nameRequired": "Введите название"
+  "nameRequired": "Введите название",
+  "newCellar": "Новый погреб",
+  "cellars": "Погреба",
+  "noCellars": "Нет погребов"
 }

@@ -45,12 +45,15 @@ class UpdateIngredientRequestDto {
 }
 
 /// Ответ бэкенда по ингредиенту.
+/// [updatedAt] — timestamp (мс) для merge в локальную БД (обновляем только если новее).
+/// Бэкенд отдаёт Instant как ISO-8601 строку (например "2025-01-31T14:30:00.123Z"); парсим в мс.
 class IngredientResponseDto {
   final int? id;
   final String name;
   final String type;
   final String? status;
   final int? amount;
+  final int? updatedAt;
 
   IngredientResponseDto({
     this.id,
@@ -58,16 +61,30 @@ class IngredientResponseDto {
     required this.type,
     this.status,
     this.amount,
+    this.updatedAt,
   });
 
   factory IngredientResponseDto.fromJson(Map<String, dynamic> json) {
+    final updatedAt = _parseUpdatedAt(json['updatedAt']);
     return IngredientResponseDto(
       id: json['id'] as int?,
       name: json['name'] as String,
       type: json['type'] as String,
       status: json['status'] as String?,
       amount: json['amount'] as int?,
+      updatedAt: updatedAt,
     );
+  }
+
+  static int? _parseUpdatedAt(dynamic value) {
+    if (value == null) return null;
+    if (value is int) return value;
+    if (value is num) return value.toInt();
+    if (value is String) {
+      final dt = DateTime.tryParse(value);
+      return dt?.millisecondsSinceEpoch;
+    }
+    return null;
   }
 }
 

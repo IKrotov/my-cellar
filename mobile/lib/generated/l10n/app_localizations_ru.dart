@@ -142,4 +142,13 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get nameRequired => 'Введите название';
+
+  @override
+  String get newCellar => 'Новый погреб';
+
+  @override
+  String get cellars => 'Погреба';
+
+  @override
+  String get noCellars => 'Нет погребов';
 }

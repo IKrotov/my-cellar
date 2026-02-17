@@ -44,5 +44,8 @@
   "deleteIngredientMessage": "Die Zutat «{name}» wird gelöscht. Dies kann nicht rückgängig gemacht werden.",
   "settingsTooltip": "Einstellungen",
   "addIngredientTooltip": "Zutat hinzufügen",
-  "nameRequired": "Bitte Namen eingeben"
+  "nameRequired": "Bitte Namen eingeben",
+  "newCellar": "Neuer Keller",
+  "cellars": "Keller",
+  "noCellars": "Keine Keller"
 }

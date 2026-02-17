@@ -8,6 +8,7 @@ import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.Table
+import java.time.Instant
 
 @Table(name = "ingredients")
 @Entity
@@ -23,6 +24,12 @@ data class Ingredient(
     @Enumerated(EnumType.STRING)
     val type: IngredientType,
 
+    @Column(name = "created_at", nullable = false)
+    val createdAt: Instant,
+
+    @Column(name = "updated_at", nullable = false)
+    val updatedAt: Instant,
+
     @Column(name = "status", nullable = false)
     @Enumerated(EnumType.STRING)
     val status: IngredientStockStatus? = IngredientStockStatus.NONE,
@@ -34,5 +41,5 @@ data class Ingredient(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
 ) {
-    constructor() : this(0, "", IngredientType.UNKNOWN)
+    constructor() : this(0, "", IngredientType.UNKNOWN, Instant.now(), Instant.now())
 }

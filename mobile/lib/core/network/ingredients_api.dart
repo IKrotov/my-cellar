@@ -2,15 +2,15 @@ import 'package:dio/dio.dart';
 
 import 'dto/ingredient_dto.dart';
 
-/// API ингредиентов: список и создание.
+/// API ингредиентов в рамках погреба: /cellars/{cellarId}/ingredients.
 class IngredientsApi {
   IngredientsApi(Dio dio) : _dio = dio;
 
   final Dio _dio;
 
-  /// GET /ingredients — список ингредиентов пользователя.
-  Future<List<IngredientResponseDto>> getList() async {
-    final response = await _dio.get<List<dynamic>>('/ingredients');
+  /// GET /cellars/{cellarId}/ingredients — список ингредиентов погреба.
+  Future<List<IngredientResponseDto>> getList(int cellarId) async {
+    final response = await _dio.get<List<dynamic>>('/cellars/$cellarId/ingredients');
     _throwIfNotOk(response);
     final list = response.data;
     if (list == null) return [];
@@ -19,29 +19,29 @@ class IngredientsApi {
         .toList();
   }
 
-  /// POST /ingredients — создать ингредиент.
-  Future<IngredientResponseDto> create(CreateIngredientRequestDto request) async {
+  /// POST /cellars/{cellarId}/ingredients — создать ингредиент.
+  Future<IngredientResponseDto> create(int cellarId, CreateIngredientRequestDto request) async {
     final response = await _dio.post<Map<String, dynamic>>(
-      '/ingredients',
+      '/cellars/$cellarId/ingredients',
       data: request.toJson(),
     );
     _throwIfNotOk(response);
     return IngredientResponseDto.fromJson(response.data!);
   }
 
-  /// PUT /ingredients/{id} — обновить ингредиент.
-  Future<IngredientResponseDto> update(int id, UpdateIngredientRequestDto request) async {
+  /// PUT /cellars/{cellarId}/ingredients/{id} — обновить ингредиент.
+  Future<IngredientResponseDto> update(int cellarId, int id, UpdateIngredientRequestDto request) async {
     final response = await _dio.put<Map<String, dynamic>>(
-      '/ingredients/$id',
+      '/cellars/$cellarId/ingredients/$id',
       data: request.toJson(),
     );
     _throwIfNotOk(response);
     return IngredientResponseDto.fromJson(response.data!);
   }
 
-  /// DELETE /ingredients/{id} — удалить ингредиент.
-  Future<void> delete(int id) async {
-    final response = await _dio.delete('/ingredients/$id');
+  /// DELETE /cellars/{cellarId}/ingredients/{id} — удалить ингредиент.
+  Future<void> delete(int cellarId, int id) async {
+    final response = await _dio.delete('/cellars/$cellarId/ingredients/$id');
     _throwIfNotOk(response);
   }
 

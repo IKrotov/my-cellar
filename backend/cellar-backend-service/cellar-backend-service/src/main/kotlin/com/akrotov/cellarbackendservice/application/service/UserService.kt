@@ -58,7 +58,7 @@ class UserService(
         if (userFromDb != null) {
             throw RegistrationFailedException("User ${request.login} is already registered")
         }
-        val user = User(request.login, passwordEncoder.encode(request.password).toString())
+        val user = User(request.login, passwordEncoder.encode(request.password).toString(), Instant.now(), Instant.now())
         userRepository.save(user)
         val accessToken = jwtTokenProvider.generateAccessToken(user.id!!, user.login)
         val refreshToken = createRefreshToken(user.login)

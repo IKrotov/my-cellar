@@ -51,5 +51,8 @@
   },
   "settingsTooltip": "Settings",
   "addIngredientTooltip": "Add ingredient",
-  "nameRequired": "Please enter a name"
+  "nameRequired": "Please enter a name",
+  "newCellar": "New cellar",
+  "cellars": "Cellars",
+  "noCellars": "No cellars"
 }

@@ -44,5 +44,8 @@
   "deleteIngredientMessage": "El ingrediente «{name}» se eliminará. Esta acción no se puede deshacer.",
   "settingsTooltip": "Ajustes",
   "addIngredientTooltip": "Añadir ingrediente",
-  "nameRequired": "Introduce un nombre"
+  "nameRequired": "Introduce un nombre",
+  "newCellar": "Nueva bodega",
+  "cellars": "Bodegas",
+  "noCellars": "Sin bodegas"
 }

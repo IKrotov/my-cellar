@@ -6,6 +6,7 @@ import com.akrotov.cellarbackendservice.application.dto.UpdateIngredientRequest
 import com.akrotov.cellarbackendservice.domain.ingredient.Ingredient
 import org.mapstruct.Mapper
 import org.mapstruct.Mapping
+import java.time.Instant
 
 @Mapper(componentModel = "spring")
 interface IngredientMapper {
@@ -16,6 +17,8 @@ interface IngredientMapper {
             type = dto.type,
             status = dto.status,
             amount = dto.amount,
+            createdAt = Instant.now(),
+            updatedAt = Instant.now(),
             id = null
         )
     }
@@ -30,6 +33,8 @@ interface IngredientMapper {
             type = request.type,
             status = request.status,
             amount = request.amount,
+            createdAt = ingredient.createdAt,
+            updatedAt = Instant.now(),
             id = ingredient.id
         )
     }
