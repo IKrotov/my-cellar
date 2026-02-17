@@ -18,15 +18,9 @@ data class User(
     @Column(name = "password", nullable = false)
     val password: String,
 
-    @Column(name = "created_at", nullable = false)
-    val createdAt: Instant,
-
-    @Column(name = "updated_at", nullable = false)
-    val updatedAt: Instant,
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null
 ) {
-    constructor() : this("", "", Instant.now(), Instant.now())
+    constructor() : this("", "")
 }
